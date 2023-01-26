@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset=windows-1253>
+<title>bogus meta charset in iframe with windows-1253 inhering from parent</title>
+<script src=/resources/testharness.js></script>
+<script src=/resources/testharnessreport.js></script>
+<iframe src=resources/bogus-charset.html></iframe>
+<script>
+async_test(t => {
+  const frame = document.querySelector("iframe");
+  frame.onload = t.step_func_done(() => {
+    // 0x00A2 in windows-1252 is at the same position as 0x0386 in windows-1253
+    assert_equals(frame.contentDocument.body.textContent, "Ά\n");
+  });
+});
+</script>
