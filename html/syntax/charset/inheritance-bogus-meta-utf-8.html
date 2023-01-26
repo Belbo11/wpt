@@ -5,12 +5,17 @@
 <script src=/resources/testharnessreport.js></script>
 <iframe src=resources/bogus-charset.html></iframe>
 <script>
-async_test(t => {
-  const frame = document.querySelector("iframe");
-  t.add_cleanup(() => frame.remove());
-  frame.onload = t.step_func_done(() => {
-    // 0x00A2 in windows-1252 is 0xFFFD in UTF-8
-    assert_equals(frame.contentDocument.body.textContent, "\uFFFD\n");
+["resources/bogus-charset.html",
+ "resources/bogus-charset-http.py"].forEach(url => {
+  async_test(t => {
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    t.add_cleanup(() => frame.remove());
+    frame.onload = t.step_func_done(() => {
+      // 0x00A2 in windows-1252 is 0xFFFD in UTF-8
+      assert_equals(frame.contentDocument.body.textContent, "\uFFFD\n");
+    });
+    document.body.append(frame);
   });
 });
 </script>
